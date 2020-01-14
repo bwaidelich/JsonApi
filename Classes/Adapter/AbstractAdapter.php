@@ -181,10 +181,7 @@ abstract class AbstractAdapter extends AbstractResourceAdapter
         if (!\is_string($this->schema)) {
             throw new Exception(\sprintf('Resource "%s" schema not found!', $this->resource), 1447947502);
         }
-        $this->related = Arrays::getValueByPath($this->configuration, 'related');
-        if (!\is_array($this->related)) {
-            throw new Exception(\sprintf('Resource "%s" related not configured', $this->resource), 1447947503);
-        }
+        $this->related = Arrays::getValueByPath($this->configuration, 'related') ?: $this->related;
         $repository = Arrays::getValueByPath($this->configuration, 'repository');
         if (\is_string($repository)) {
             if (!$this->objectManager->has($repository)) {
