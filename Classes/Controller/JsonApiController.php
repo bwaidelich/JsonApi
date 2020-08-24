@@ -4,13 +4,8 @@ namespace Flowpack\JsonApi\Controller;
 
 use Flowpack\JsonApi\Adapter\DefaultAdapter;
 use Flowpack\JsonApi\Contract\Object\ResourceObjectInterface;
-use Flowpack\JsonApi\Document\Error;
-use Flowpack\JsonApi\Domain\Model\PaginationParameters;
 use Flowpack\JsonApi\Exception;
-use Flowpack\JsonApi\Object\Document;
-use Neomerx\JsonApi\Exceptions\JsonApiException;
 use Neomerx\JsonApi\Schema\BaseSchema;
-use Neomerx\JsonApi\Schema\ErrorCollection;
 use Neomerx\JsonApi\Schema\Link;
 use Neos\Flow\Annotations as Flow;
 use Flowpack\JsonApi\Adapter\AbstractAdapter;
@@ -22,12 +17,13 @@ use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
 use Flowpack\JsonApi\Mvc\ValidatedRequest;
 use Flowpack\JsonApi\View\JsonApiView;
 use Neos\Flow\Mvc\ActionRequest;
+use Neos\Flow\Mvc\ActionResponse;
 use Neos\Flow\Mvc\Controller\ActionController;
 use Neos\Flow\Mvc\Controller\Argument;
 use Neos\Flow\Mvc\Exception\InvalidArgumentTypeException;
 use Neos\Flow\Mvc\Exception\UnsupportedRequestTypeException;
 use Neos\Flow\Mvc\RequestInterface;
-use Neos\Flow\Mvc\ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 use Neos\Flow\Mvc\View\ViewInterface;
 use Neos\Utility\Arrays;
 use Neos\Utility\TypeHandling;
@@ -122,15 +118,15 @@ class JsonApiController extends ActionController
      *
      * This method should be called by the concrete processRequest() method.
      *
-     * @param RequestInterface $request
-     * @param ResponseInterface $response
+     * @param ActionRequest $request
+     * @param ActionResponse $response
      * @throws UnsupportedRequestTypeException
      * @throws \Neos\Flow\Mvc\Exception\NoSuchArgumentException
      * @throws \Neos\Flow\Mvc\Exception\StopActionException
      * @throws RuntimeException
      * @throws ConfigurationException
      */
-    protected function initializeController(RequestInterface $request, ResponseInterface $response): void
+    protected function initializeController(ActionRequest $request, ActionResponse $response): void
     {
         parent::initializeController($request, $response);
         /** @var ActionRequest $request */

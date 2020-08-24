@@ -7,6 +7,7 @@ use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Monitor\FileMonitor;
 use Neos\Flow\Package\FlowPackageInterface;
 use Neos\Flow\Package\Package as BasePackage;
+use Neos\Flow\Package\PackageManager;
 
 /**
  * Class Package
@@ -44,7 +45,7 @@ class Package extends BasePackage
             $dispatcher->connect('Neos\Flow\Core\Booting\Sequence', 'afterInvokeStep', function ($step) use ($bootstrap) {
                 if ($step->getIdentifier() === 'neos.flow:systemfilemonitor') {
                     $nodeTypeConfigurationFileMonitor = FileMonitor::createFileMonitorAtBoot('FlowpackJsonApi_JsonApiSchemaConfiguration', $bootstrap);
-                    $packageManager = $bootstrap->getEarlyInstance('Neos\Flow\Package\PackageManagerInterface');
+                    $packageManager = $bootstrap->getEarlyInstance(PackageManager::class);
                     /**
                      * @var string $packageKey
                      * @var FlowPackageInterface $package

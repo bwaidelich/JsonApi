@@ -7,7 +7,7 @@ use Neos\Flow\Package;
 use Neos\FluidAdaptor\View\StandaloneView;
 use Neos\Flow\Core\ClassLoader;
 use Neos\Flow\Package\PackageInterface;
-use Neos\Flow\Package\FlowPackageInterface;
+use Neos\Flow\Package\PackageManager;
 use Neos\Utility\Files;
 use Flowpack\JsonApi\Utility\StringUtility as Str;
 
@@ -24,7 +24,7 @@ class GeneratorService
     protected $objectManager;
 
     /**
-     * @var \Neos\Flow\Package\PackageManagerInterface
+     * @var PackageManager
      * @Flow\Inject
      */
     protected $packageManager;

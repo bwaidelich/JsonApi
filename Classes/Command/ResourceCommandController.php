@@ -9,6 +9,7 @@ namespace Flowpack\JsonApi\Command;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
 use Neos\Flow\Package;
+use Neos\Flow\Package\PackageManager;
 use Neos\Flow\Reflection\ReflectionService;
 use Flowpack\JsonApi\Service\GeneratorService;
 use Flowpack\JsonApi\Utility\StringUtility as Str;
@@ -21,7 +22,7 @@ class ResourceCommandController extends CommandController
 
     /**
      * @Flow\Inject
-     * @var \Neos\Flow\Package\PackageManagerInterface
+     * @var PackageManager
      */
     protected $packageManager;
 
