@@ -187,7 +187,7 @@ class GeneratorService
         $fileContent = $this->renderTemplate($templatePathAndFilename, $contextVariables);
 
         $testFilename = $testName . '.php';
-        $testPath = $this->packageManager->getPackage($packageKey)->getPackagePath() . FlowPackageInterface::DIRECTORY_TESTS_FUNCTIONAL . 'JsonApi/' . $endpoint . '/';
+        $testPath = $this->packageManager->getPackage($packageKey)->getPackagePath() . Package\FlowPackageInterface::DIRECTORY_TESTS_FUNCTIONAL . 'JsonApi/' . $endpoint . '/';
         $targetPathAndFilename = $testPath . $testFilename;
 
         $this->generateFile($targetPathAndFilename, $fileContent, $overwrite);

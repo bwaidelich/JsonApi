@@ -16,6 +16,7 @@ use Neomerx\JsonApi\Contracts\Encoder\EncoderInterface;
 use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
 use Flowpack\JsonApi\Mvc\ValidatedRequest;
 use Flowpack\JsonApi\View\JsonApiView;
+use Neos\Flow\Http\Component\SetHeaderComponent;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Flow\Mvc\Controller\ActionController;
@@ -23,7 +24,6 @@ use Neos\Flow\Mvc\Controller\Argument;
 use Neos\Flow\Mvc\Exception\InvalidArgumentTypeException;
 use Neos\Flow\Mvc\Exception\UnsupportedRequestTypeException;
 use Neos\Flow\Mvc\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Neos\Flow\Mvc\View\ViewInterface;
 use Neos\Utility\Arrays;
 use Neos\Utility\TypeHandling;
@@ -109,8 +109,9 @@ class JsonApiController extends ActionController
     protected function initializeAction(): void
     {
         parent::initializeAction();
-        $this->response->setHeader('Content-Type', 'application/vnd.api+json');
-        $this->response->setHeader('Access-Control-Allow-Origin', $this->responseHeaders['Access-Control-Allow-Origin']);
+        $this->response->setContentType('application/vnd.api+json');
+        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', $this->responseHeaders['Access-Control-Allow-Origin']);
+
     }
 
     /**
@@ -168,9 +169,7 @@ class JsonApiController extends ActionController
     {
         if ($this->validatedRequest->isOptions()) {
             return 'optionsAction';
-        }
-
-        if ($this->validatedRequest->isIndex()) {
+        } elseif ($this->validatedRequest->isIndex()) {
             $this->assertAllowedMethod('list');
             return 'listAction';
         } elseif ($this->validatedRequest->isCreateResource()) {
@@ -315,7 +314,7 @@ class JsonApiController extends ActionController
         $hasMeta = false;
 
         $count = $this->adapter->count($this->encodedParameters);
-        $arguments = $this->request->getHttpRequest()->getArguments();
+        $arguments = $this->request->getHttpRequest()->getQueryParams();
         $pagination = $this->encodedParameters->getPagination();
         $data = $this->adapter->query($this->encodedParameters, $pagination);
 
@@ -378,10 +377,10 @@ class JsonApiController extends ActionController
         try {
             $data = $this->adapter->create($resource, $this->validatedRequest->getDocument()->getResource(), $this->encodedParameters);
         } catch (Exception\InvalidJsonException $e) {
-            $this->response = $this->response->withStatus(406);
+            $this->response->setStatusCode(406);
             return;
         }
-        $this->response->setStatus(201);
+        $this->response->setStatusCode(201);
         $this->view->setData($data);
     }
 
@@ -406,11 +405,11 @@ class JsonApiController extends ActionController
         try {
             $data = $this->adapter->update($resource, $this->validatedRequest->getDocument()->getResource(), $this->encodedParameters);
         } catch (Exception\InvalidJsonException $e) {
-            $this->response = $this->response->withStatus(406);
+            $this->response->setStatusCode(406);
             return;
         }
         $this->persistenceManager->persistAll();
-        $this->response->setStatus(200);
+        $this->response->setStatusCode(200);
         $this->view->setData($data);
     }
 
@@ -421,7 +420,7 @@ class JsonApiController extends ActionController
     public function deleteAction(): string
     {
         $this->adapter->delete($this->record, $this->encodedParameters);
-        $this->response->setStatus(204);
+        $this->response->setStatusCode(204);
         return '';
     }
 
@@ -481,10 +480,10 @@ class JsonApiController extends ActionController
             unset($allowedMethods[3]);
         }
 
-        $this->response = $this->response->setHeader('Access-Control-Allow-Methods', \implode(', ', \array_unique($allowedMethods)));
-        $this->response = $this->response->setHeader('Access-Control-Max-Age', '3600');
-        $this->response = $this->response->setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
-        $this->response = $this->response->withStatus(204);
+        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Methods', \implode(', ', \array_unique($allowedMethods)));
+        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Max-Age', '3600');
+        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
+        $this->response->setStatusCode(204);
         return '';
     }
 
@@ -496,7 +495,7 @@ class JsonApiController extends ActionController
      */
     public function errorAction()
     {
-        $this->response = $this->response->withStatus(422);
+        $this->response->setStatusCode(422);
         $this->handleTargetNotFoundError();
         $this->response->setContent(\json_encode((object)$this->getFlattenedValidationErrorMessage()));
     }
@@ -504,9 +503,9 @@ class JsonApiController extends ActionController
     /**
      * Returns a json object containing all validation errors.
      *
-     * @return string
+     * @return array
      */
-    protected function getFlattenedValidationErrorMessage()
+    protected function getFlattenedValidationErrorMessage(): array
     {
 //        $errorCollection = new ErrorCollection();
         $errorCollection = [];
@@ -589,7 +588,7 @@ class JsonApiController extends ActionController
     protected function getUrlPrefix(RequestInterface $request): string
     {
         $suffix = isset($this->endpoint['baseUrl']) && isset($this->endpoint['version']) ? $this->endpoint['baseUrl'] . '/' . $this->endpoint['version'] : '/';
-        return \rtrim($request->getMainRequest()->getHttpRequest()->getBaseUri() . $suffix, '/');
+        return \rtrim($request->getMainRequest()->getHttpRequest()->getUri() . $suffix, '/');
     }
 
     /**
