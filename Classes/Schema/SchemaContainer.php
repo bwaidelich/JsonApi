@@ -102,7 +102,7 @@ class SchemaContainer extends \Neomerx\JsonApi\Schema\SchemaContainer {
     public function register(string $type, $schema): void
     {
         if (empty($type) === true || \class_exists($type) === false) {
-            throw new InvalidArgumentException(_(static::MSG_INVALID_MODEL_TYPE));
+            throw new InvalidArgumentException(sprintf('Invalid model type %s with schema %s', $type, $schema));
         }
 
         $isOk = (

@@ -110,8 +110,9 @@ class JsonApiController extends ActionController
     {
         parent::initializeAction();
         $this->response->setContentType('application/vnd.api+json');
-        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', $this->responseHeaders['Access-Control-Allow-Origin']);
-
+        foreach($this->responseHeaders as $headerName => $headerValue) {
+            $this->response->setComponentParameter(SetHeaderComponent::class, $headerName, $headerValue);
+        }
     }
 
     /**

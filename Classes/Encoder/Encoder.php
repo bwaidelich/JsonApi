@@ -27,15 +27,13 @@ class Encoder extends BaseEncoder
     }
 
     /**
+     * encode to json
      * @inheritdoc
      */
     public function encodeData($data): string
     {
-        // encode to json
         $array  = $this->encodeDataToArray($data);
-        $result = $this->encodeToJson($array);
-
-        return $result;
+        return $this->encodeToJson($array);
     }
 
     /**
@@ -85,9 +83,7 @@ class Encoder extends BaseEncoder
         // write footer
         $this->writeFooter($writer);
 
-        $array = $writer->getDocument();
-
-        return $array;
+        return $writer->getDocument();
     }
 
     /**
