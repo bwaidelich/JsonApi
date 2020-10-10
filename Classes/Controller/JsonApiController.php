@@ -5,6 +5,7 @@ namespace Flowpack\JsonApi\Controller;
 use Flowpack\JsonApi\Adapter\DefaultAdapter;
 use Flowpack\JsonApi\Contract\Object\ResourceObjectInterface;
 use Flowpack\JsonApi\Exception;
+use GuzzleHttp\Psr7\Uri;
 use Neomerx\JsonApi\Schema\BaseSchema;
 use Neomerx\JsonApi\Schema\Link;
 use Neos\Flow\Annotations as Flow;
@@ -588,8 +589,17 @@ class JsonApiController extends ActionController
      */
     protected function getUrlPrefix(RequestInterface $request): string
     {
+        /** @var Uri $uri */
+        $uri = $request->getMainRequest()->getHttpRequest()->getUri();
+
+        $host = $uri->getScheme() . '://' . $uri->getHost();
+        if (($port = $uri->getPort()) !== null) {
+            $host .= ':' . $port . '/';
+        }
+
         $suffix = isset($this->endpoint['baseUrl']) && isset($this->endpoint['version']) ? $this->endpoint['baseUrl'] . '/' . $this->endpoint['version'] : '/';
-        return \rtrim($request->getMainRequest()->getHttpRequest()->getUri() . $suffix, '/');
+
+        return $host . $suffix;
     }
 
     /**
