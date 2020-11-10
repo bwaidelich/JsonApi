@@ -177,7 +177,7 @@ class EncodingParametersParser implements EncodingParametersInterface
     /**
      * @return array
      */
-    protected function getParameters(): array
+    public function getParameters(): array
     {
         return $this->parameters;
     }
