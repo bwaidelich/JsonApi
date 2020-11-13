@@ -87,7 +87,7 @@ class PaginationParameters
      */
     public function current()
     {
-        return (int)$this->parameters['number'];
+        return isset($this->parameters['number']) ? (int)$this->parameters['number'] : 0;
     }
 
     /**
