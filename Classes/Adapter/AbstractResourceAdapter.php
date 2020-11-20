@@ -45,11 +45,7 @@ abstract class AbstractResourceAdapter implements ResourceAdapterInterface
     {
         $this->beforeCreate($propertyMappedResource, $resourceObject, $parameters);
 
-        $persistedResource = $this->persist($propertyMappedResource);
-
-        $this->beforeCreate($persistedResource, $resourceObject, $parameters);
-
-        return $persistedResource;
+        return $this->persist($propertyMappedResource);
     }
 
     /**
