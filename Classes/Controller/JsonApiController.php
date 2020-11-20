@@ -111,7 +111,7 @@ class JsonApiController extends ActionController
     {
         parent::initializeAction();
         $this->response->setContentType('application/vnd.api+json');
-        foreach($this->responseHeaders as $headerName => $headerValue) {
+        foreach ($this->responseHeaders as $headerName => $headerValue) {
             $this->response->setComponentParameter(SetHeaderComponent::class, $headerName, $headerValue);
         }
     }
@@ -174,6 +174,9 @@ class JsonApiController extends ActionController
         } elseif ($this->validatedRequest->isIndex()) {
             $this->assertAllowedMethod('list');
             return 'listAction';
+        } elseif ($this->validatedRequest->isCreateResource() && $this->validatedRequest->getResourceType() === 'nodes') {
+            $this->assertAllowedMethod('create');
+            return 'createNodeAction';
         } elseif ($this->validatedRequest->isCreateResource()) {
             $this->assertAllowedMethod('create');
             return 'createAction';
@@ -187,6 +190,9 @@ class JsonApiController extends ActionController
         if ($this->validatedRequest->isReadResource()) {
             $this->assertAllowedMethod('read');
             return 'readAction';
+        } elseif ($this->validatedRequest->isUpdateResource() && $this->validatedRequest->getResourceType() === 'nodes') {
+            $this->assertAllowedMethod('update');
+            return 'updateNodeAction';
         } elseif ($this->validatedRequest->isUpdateResource()) {
             $this->assertAllowedMethod('update');
             return 'updateAction';
@@ -256,40 +262,50 @@ class JsonApiController extends ActionController
      */
     protected function mapRequestArgumentsToControllerArguments(): void
     {
-        if (!\in_array($this->request->getHttpRequest()->getMethod(), ['POST', 'PUT', 'PATCH'])) {
+        if (!\in_array($this->request->getHttpRequest()->getMethod(), [
+            'POST',
+            'PUT',
+            'PATCH'
+        ])) {
             parent::mapRequestArgumentsToControllerArguments();
             return;
         }
 
-        /** @var ResourceObjectInterface $resource */
-        $resource = $this->validatedRequest->getDocument()->getResource();
+        if (!\in_array($this->validatedRequest->getDocument()->getResource()->getType(), ['node']) && \in_array($this->request->getHttpRequest()->getMethod(), [
+                'POST',
+                'PUT',
+                'PATCH'
+            ])) {
+            /** @var ResourceObjectInterface $resource */
+            $resource = $this->validatedRequest->getDocument()->getResource();
+            /** @var \Neos\Flow\Mvc\Controller\MvcPropertyMappingConfiguration $propertyMappingConfiguration */
+            $propertyMappingConfiguration = $this->arguments['resource']->getPropertyMappingConfiguration();
+            $this->adapter->setPropertyMappingConfiguration($propertyMappingConfiguration, $resource);
 
-        /** @var \Neos\Flow\Mvc\Controller\MvcPropertyMappingConfiguration $propertyMappingConfiguration */
-        $propertyMappingConfiguration = $this->arguments['resource']->getPropertyMappingConfiguration();
-        $this->adapter->setPropertyMappingConfiguration($propertyMappingConfiguration, $resource);
+            /** @var Argument $argument */
+            foreach ($this->arguments as $argument) {
+                $argumentName = $argument->getName();
+                if ($this->request->hasArgument($argumentName)) {
+                    if ($resource->hasId()) {
+                        $arguments = $this->adapter->hydrateAttributes($resource, $resource->getAttributes(), $resource->getId());
+                    } else {
+                        $arguments = $this->adapter->hydrateAttributes($resource, $resource->getAttributes());
+                    }
+                    $relationshipArguments = $this->adapter->hydrateRelations($resource, $resource->getRelationships());
+                    $arguments = \array_merge($arguments, $relationshipArguments);
 
-        /** @var Argument $argument */
-        foreach ($this->arguments as $argument) {
-            $argumentName = $argument->getName();
-            if ($this->request->hasArgument($argumentName)) {
-                if ($resource->hasId()) {
-                    $arguments = $this->adapter->hydrateAttributes($resource, $resource->getAttributes(), $resource->getId());
-                } else {
-                    $arguments = $this->adapter->hydrateAttributes($resource, $resource->getAttributes());
-                }
-                $relationshipArguments = $this->adapter->hydrateRelations($resource, $resource->getRelationships());
-                $arguments = \array_merge($arguments, $relationshipArguments);
-
-                try {
-                    $argument->setValue($arguments);
-                } catch (\Exception $e) {
+                    try {
+                        $argument->setValue($arguments);
+                    } catch (\Exception $e) {
 //                     todo: handle validation error
-                    throw $e;
+                        throw $e;
+                    }
+                } elseif ($argument->isRequired()) {
+                    throw new \Neos\Flow\Mvc\Exception\RequiredArgumentMissingException('Required argument "' . $argumentName . '" is not set.', 1298012500);
                 }
-            } elseif ($argument->isRequired()) {
-                throw new \Neos\Flow\Mvc\Exception\RequiredArgumentMissingException('Required argument "' . $argumentName . '" is not set.', 1298012500);
             }
         }
+
     }
 
     /**
@@ -387,6 +403,17 @@ class JsonApiController extends ActionController
     }
 
     /**
+     * @param $resource
+     * @throws RuntimeException
+     * @throws \Neos\Flow\Http\Exception
+     * @Flow\IgnoreValidation ("$resource")
+     */
+    public function createNodeAction($resource): void
+    {
+        self::createAction($resource);
+    }
+
+    /**
      * @param string $identifier
      * @return void
      */
@@ -413,6 +440,17 @@ class JsonApiController extends ActionController
         $this->persistenceManager->persistAll();
         $this->response->setStatusCode(200);
         $this->view->setData($data);
+    }
+
+    /**
+     * @param $resource
+     * @throws RuntimeException
+     * @throws \Neos\Flow\Http\Exception
+     * @Flow\IgnoreValidation ("$resource")
+     */
+    public function updateNodeAction($resource): void
+    {
+        self::updateAction($resource);
     }
 
     /**
