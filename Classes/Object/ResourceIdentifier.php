@@ -12,7 +12,6 @@ use Flowpack\JsonApi\Exception\RuntimeException;
  */
 class ResourceIdentifier extends StandardObject implements ResourceIdentifierInterface
 {
-
     use IdentifiableTrait,
         MetaMemberTrait;
 
@@ -77,5 +76,4 @@ class ResourceIdentifier extends StandardObject implements ResourceIdentifierInt
     {
         return \sprintf('%s:%s', $this->getType(), $this->getId());
     }
-
 }

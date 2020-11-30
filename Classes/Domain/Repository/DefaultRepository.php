@@ -13,7 +13,6 @@ use Neos\Flow\Persistence\Repository;
  */
 class DefaultRepository extends Repository
 {
-
     use JsonApiRepositoryTrait;
 
     /**

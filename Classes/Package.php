@@ -30,7 +30,9 @@ class Package extends BasePackage
     public function boot(Bootstrap $bootstrap)
     {
         $dispatcher = $bootstrap->getSignalSlotDispatcher();
-        $dispatcher->connect('Neos\Flow\Configuration\ConfigurationManager', 'configurationManagerReady',
+        $dispatcher->connect(
+            'Neos\Flow\Configuration\ConfigurationManager',
+            'configurationManagerReady',
             function ($configurationManager) {
                 $configurationManager->registerConfigurationType(
                     'JsonApiSchema',

@@ -5,7 +5,6 @@ namespace Flowpack\JsonApi\Contract\Object;
 use Flowpack\JsonApi\Exception\RuntimeException;
 use Neomerx\JsonApi\Contracts\Schema\DocumentInterface as NeomerxDocumentInterface;
 
-
 /**
  * Interface RelationshipInterface
  *
@@ -13,7 +12,6 @@ use Neomerx\JsonApi\Contracts\Schema\DocumentInterface as NeomerxDocumentInterfa
  */
 interface RelationshipInterface extends StandardObjectInterface
 {
-
     const DATA = NeomerxDocumentInterface::KEYWORD_DATA;
     const META = NeomerxDocumentInterface::KEYWORD_META;
     const ATTRIBUTES = NeomerxDocumentInterface::KEYWORD_ATTRIBUTES;
@@ -68,5 +66,4 @@ interface RelationshipInterface extends StandardObjectInterface
      * @return bool
      */
     public function isHasMany();
-
 }

@@ -73,7 +73,7 @@ trait ModelIncludesTrait
     protected function convertIncludePaths($includePaths)
     {
         $convertedIncludedPaths = [];
-        foreach($includePaths as $path) {
+        foreach ($includePaths as $path) {
             $convertedIncludedPaths[] = $this->convertIncludePath($path);
         }
         return $convertedIncludedPaths;

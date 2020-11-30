@@ -96,5 +96,4 @@ class Encoder extends BaseEncoder
 
         return $writer;
     }
-
 }

@@ -12,7 +12,6 @@ use Flowpack\JsonApi\Exception\RuntimeException;
  */
 interface ResourceIdentifierInterface extends StandardObjectInterface, MetaMemberInterface
 {
-
     const TYPE = NeomerxDocumentInterface::KEYWORD_TYPE;
     const ID = NeomerxDocumentInterface::KEYWORD_ID;
     const META = NeomerxDocumentInterface::KEYWORD_META;
@@ -80,5 +79,4 @@ interface ResourceIdentifierInterface extends StandardObjectInterface, MetaMembe
      * @return string
      */
     public function toString();
-
 }

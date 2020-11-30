@@ -314,7 +314,6 @@ class JsonApiController extends ActionController
                 }
             }
         }
-
     }
 
     /**
@@ -496,7 +495,6 @@ class JsonApiController extends ActionController
      */
     public function updateRelationshipAction(string $relationship): string
     {
-
     }
 
     /**

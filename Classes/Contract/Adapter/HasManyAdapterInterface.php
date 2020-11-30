@@ -38,5 +38,4 @@ interface HasManyAdapterInterface extends RelationshipAdapterInterface
      *      the updated domain record.
      */
     public function remove($record, RelationshipInterface $relationship, EncodingParametersInterface $parameters);
-
 }

@@ -62,5 +62,4 @@ abstract class AbstractManyRelation extends AbstractRelation implements HasManyA
             !empty($parameters->getPagination()) ||
             !empty($parameters->getIncludePaths());
     }
-
 }

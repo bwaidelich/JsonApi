@@ -69,5 +69,4 @@ interface RelationshipAdapterInterface
      *      the updated domain record.
      */
     public function replace($record, RelationshipInterface $relationship, EncodingParametersInterface $parameters);
-
 }

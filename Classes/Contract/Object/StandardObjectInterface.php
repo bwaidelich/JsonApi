@@ -157,5 +157,4 @@ interface StandardObjectInterface extends Traversable, Countable, JsonSerializab
      * @return stdClass
      */
     public function toStdClass();
-
 }

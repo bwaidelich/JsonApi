@@ -29,5 +29,4 @@ interface RelationshipsInterface extends StandardObjectInterface
      *      if the key is not present, or is not an object.
      */
     public function getRelationship($key);
-
 }

@@ -177,8 +177,7 @@ abstract class AbstractResourceAdapter implements ResourceAdapterInterface
         $record,
         RelationshipsInterface $relationships,
         EncodingParametersParser $parameters
-    )
-    {
+    ) {
         foreach ($relationships->getAll() as $field => $relationship) {
             /** @todo Skip any fields that are not fillable. */
 
@@ -208,10 +207,8 @@ abstract class AbstractResourceAdapter implements ResourceAdapterInterface
         $field,
         RelationshipInterface $relationship,
         EncodingParametersParser $parameters
-    )
-    {
+    ) {
         $relation = $this->related($field);
         $relation->update($record, $relationship, $parameters);
     }
-
 }

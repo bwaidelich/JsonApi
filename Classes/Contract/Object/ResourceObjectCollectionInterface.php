@@ -52,5 +52,4 @@ interface ResourceObjectCollectionInterface extends IteratorAggregate, Countable
      * @return bool
      */
     public function isEmpty();
-
 }

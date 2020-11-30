@@ -11,7 +11,6 @@ use Flowpack\JsonApi\Exception\RuntimeException;
  */
 class RelationshipObject extends StandardObject implements ResourceObjectInterface
 {
-
     use IdentifiableTrait,
         MetaMemberTrait;
 

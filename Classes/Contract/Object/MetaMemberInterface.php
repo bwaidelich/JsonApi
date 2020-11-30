@@ -25,5 +25,4 @@ interface MetaMemberInterface
      * @return bool
      */
     public function hasMeta();
-
 }

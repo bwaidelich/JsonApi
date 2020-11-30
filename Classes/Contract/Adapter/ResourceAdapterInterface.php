@@ -103,5 +103,4 @@ interface ResourceAdapterInterface
      * @return RelationshipAdapterInterface
      */
     public function related($field);
-
 }

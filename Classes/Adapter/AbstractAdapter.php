@@ -276,7 +276,8 @@ abstract class AbstractAdapter extends AbstractResourceAdapter
             ->setTypeConverterOption(
                 PersistentObjectConverter::class,
                 PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
-                true)
+                true
+            )
             ->setTypeConverterOption(
                 PersistentObjectConverter::class,
                 PersistentObjectConverter::CONFIGURATION_IDENTITY_CREATION_ALLOWED,
@@ -613,7 +614,6 @@ abstract class AbstractAdapter extends AbstractResourceAdapter
         $arguments = [];
         if ($relationships !== null) {
             foreach ($relationships->getAll() as $field => $value) {
-
                 if (!$this->isRelation($field)) {
                     continue;
                 }
@@ -653,8 +653,7 @@ abstract class AbstractAdapter extends AbstractResourceAdapter
         $field,
         RelationshipInterface $relationship,
         EncodingParametersParser $parameters
-    )
-    {
+    ) {
         $relation = $this->related($field);
         if (!$this->requiresPrimaryRecordPersistence($relation)) {
             $relation->update($record, $relationship, $parameters);
@@ -673,13 +672,11 @@ abstract class AbstractAdapter extends AbstractResourceAdapter
         $record,
         ResourceObjectInterface $resource,
         EncodingParametersParser $parameters
-    )
-    {
+    ) {
         $relationships = $resource->getRelationships();
         $changed = false;
 
         if ($relationships !== null) {
-
             foreach ($relationships->getAll() as $field => $value) {
                 /** Skip any fields that are not relations */
                 if (!$this->isRelation($field)) {

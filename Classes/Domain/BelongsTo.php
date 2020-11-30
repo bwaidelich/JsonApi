@@ -43,7 +43,7 @@ class BelongsTo extends AbstractRelation
     {
         $relation = $this->getRelation($record);
         // TODO: associate and dissociate are only possible if object is found
-return;
+        return;
 
         if ($related = $this->findRelated($relationship)) {
             $relation->associate($related);

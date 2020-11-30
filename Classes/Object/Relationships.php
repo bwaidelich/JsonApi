@@ -40,5 +40,4 @@ class Relationships extends StandardObject implements RelationshipsInterface
 
         return new Relationship($value);
     }
-
 }

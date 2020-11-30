@@ -48,8 +48,7 @@ class InvalidJsonException extends JsonApiException
         $jsonErrorMessage = null,
         $defaultHttpCode = self::HTTP_CODE_BAD_REQUEST,
         Exception $previous = null
-    )
-    {
+    ) {
         parent::__construct([], $defaultHttpCode, $previous);
 
         $this->jsonError = $jsonError;

@@ -9,7 +9,6 @@ use Neomerx\JsonApi\Contracts\Http\Query\BaseQueryParserInterface as P;
 use Neomerx\JsonApi\Schema\Error;
 use Flowpack\JsonApi\Contract\Parameters\EncodingParametersInterface;
 
-
 /**
  * Class EncodingParametersParser
  * @package Flowpack\JsonApi\Mvc\Controller
@@ -231,8 +230,7 @@ class EncodingParametersParser implements EncodingParametersInterface
         string $paramName,
         $shouldBeString,
         string $errorTitle
-    ): iterable
-    {
+    ): iterable {
         return $this->splitStringAndCheckNoEmpties($paramName, $shouldBeString, ',', $errorTitle);
     }
 
@@ -247,8 +245,7 @@ class EncodingParametersParser implements EncodingParametersInterface
         string $paramName,
         $shouldBeString,
         string $errorTitle
-    ): iterable
-    {
+    ): iterable {
         return $this->splitStringAndCheckNoEmpties($paramName, $shouldBeString, ' ', $errorTitle);
     }
 
@@ -265,8 +262,7 @@ class EncodingParametersParser implements EncodingParametersInterface
         $shouldBeString,
         string $separator,
         string $errorTitle
-    ): iterable
-    {
+    ): iterable {
         if (is_string($shouldBeString) === false || ($trimmed = \trim($shouldBeString)) === '') {
             throw new JsonApiException($this->createParameterError($paramName, $errorTitle));
         }

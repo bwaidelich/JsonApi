@@ -12,7 +12,6 @@ use Neomerx\JsonApi\Contracts\Schema\DocumentInterface as NeomerxDocumentInterfa
  */
 interface ResourceObjectInterface
 {
-
     const TYPE = NeomerxDocumentInterface::KEYWORD_TYPE;
     const ID = NeomerxDocumentInterface::KEYWORD_ID;
     const ATTRIBUTES = NeomerxDocumentInterface::KEYWORD_ATTRIBUTES;
@@ -82,5 +81,4 @@ interface ResourceObjectInterface
      * @throws RuntimeException
      */
     public function getRelationship($key);
-
 }

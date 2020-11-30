@@ -131,8 +131,7 @@ class Error implements MutableErrorInterface
         $detail = null,
         array $source = null,
         array $meta = null
-    )
-    {
+    ) {
         $this->setId($id);
         $this->setLinks($links);
         $this->setStatus($status);

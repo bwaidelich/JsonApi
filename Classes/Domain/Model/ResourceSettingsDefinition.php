@@ -39,7 +39,6 @@ class ResourceSettingsDefinition
     {
         if (!isset($this->settings[$this->resource]) || !is_array($this->settings[$this->resource])) {
             throw new ConfigurationException('Configuration for resource "%s" not found', 1449128938);
-
         }
         $resourceSetting = $this->settings[$this->resource];
         if (!isset($resourceSetting['schemas']) || !is_array($resourceSetting['schemas']) || $resourceSetting['schemas'] === []) {

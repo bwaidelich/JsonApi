@@ -13,7 +13,6 @@ use Traversable;
  */
 class StandardObject implements IteratorAggregate, StandardObjectInterface
 {
-
     use ObjectProxyTrait;
 
     /**

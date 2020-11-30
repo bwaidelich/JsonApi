@@ -106,7 +106,7 @@ abstract class AbstractRoutePartHandler extends AbstractRoutePart implements Dyn
      * @param string $routePath The request path to be matched - without query parameters, host and fragment.
      * @return bool|MatchResult true or an instance of MatchResult if Route Part matched $routePath, otherwise false.
      */
-    final function match(&$routePath)
+    final public function match(&$routePath)
     {
         return $this->matchWithParameters($routePath, RouteParameters::createEmpty());
     }

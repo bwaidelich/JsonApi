@@ -56,7 +56,6 @@ class ResourceIdentifierCollection implements ResourceIdentifierCollectionInterf
     public function addMany(array $identifiers)
     {
         foreach ($identifiers as $identifier) {
-
             if (!$identifier instanceof ResourceIdentifierInterface) {
                 throw new InvalidArgumentException('Expecting only identifier objects.');
             }
@@ -119,7 +118,6 @@ class ResourceIdentifierCollection implements ResourceIdentifierCollectionInterf
     {
         /** @var ResourceIdentifier $identifier */
         foreach ($this as $identifier) {
-
             if (!$identifier->isComplete()) {
                 return false;
             }
@@ -136,7 +134,6 @@ class ResourceIdentifierCollection implements ResourceIdentifierCollectionInterf
     {
         /** @var ResourceIdentifier $identifier */
         foreach ($this as $identifier) {
-
             if (!$identifier->isType($typeOrTypes)) {
                 return false;
             }
@@ -155,7 +152,6 @@ class ResourceIdentifierCollection implements ResourceIdentifierCollectionInterf
 
         /** @var ResourceIdentifier $identifier */
         foreach ($this as $identifier) {
-
             $key = \is_array($typeMap) ? $identifier->mapType($typeMap) : $identifier->getType();
 
             if (!isset($ret[$key])) {

@@ -103,5 +103,4 @@ abstract class AbstractRelation implements RelationshipAdapterInterface
         $relation = $record->{'get' . \ucfirst($this->key)}();
         return $relation;
     }
-
 }

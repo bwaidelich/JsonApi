@@ -73,5 +73,4 @@ class JsonApiView extends AbstractView
     {
         $this->data = $data;
     }
-
 }

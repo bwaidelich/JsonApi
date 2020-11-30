@@ -11,7 +11,6 @@ use Flowpack\JsonApi\Exception\RuntimeException;
  */
 class ResourceObject extends StandardObject implements ResourceObjectInterface
 {
-
     use IdentifiableTrait,
         MetaMemberTrait;
 
@@ -76,5 +75,4 @@ class ResourceObject extends StandardObject implements ResourceObjectInterface
 
         return $relationships->has($key) ? $relationships->getRelationship($key) : null;
     }
-
 }

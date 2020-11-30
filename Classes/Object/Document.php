@@ -13,7 +13,6 @@ use Flowpack\JsonApi\Document\Error;
  */
 class Document extends StandardObject implements DocumentInterface
 {
-
     use MetaMemberTrait;
 
     /**
@@ -105,5 +104,4 @@ class Document extends StandardObject implements DocumentInterface
 
         return Error::createMany($data);
     }
-
 }

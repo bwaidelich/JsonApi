@@ -60,7 +60,6 @@ class RelationshipObjectCollection implements ResourceObjectCollectionInterface
     {
         /** @var ResourceObjectInterface $resource */
         foreach ($this as $resource) {
-
             if ($identifier->isSame($resource->getIdentifier())) {
                 return true;
             }
@@ -76,7 +75,6 @@ class RelationshipObjectCollection implements ResourceObjectCollectionInterface
     {
         /** @var ResourceObjectInterface $resource */
         foreach ($this as $resource) {
-
             if ($identifier->isSame($resource->getIdentifier())) {
                 return $resource;
             }
@@ -142,7 +140,6 @@ class RelationshipObjectCollection implements ResourceObjectCollectionInterface
     public function addMany(array $resources)
     {
         foreach ($resources as $resource) {
-
             if (!$resource instanceof ResourceObjectInterface) {
                 throw new InvalidArgumentException('Expecting only resource objects.');
             }

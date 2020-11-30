@@ -28,5 +28,4 @@ class Factory extends \Neomerx\JsonApi\Factories\Factory
     {
         return new Encoder($this, $container);
     }
-
 }

@@ -13,7 +13,6 @@ use Flowpack\JsonApi\Exception\RuntimeException;
  */
 interface DocumentInterface extends StandardObjectInterface, MetaMemberInterface
 {
-
     const DATA = NeomerxDocumentInterface::KEYWORD_DATA;
     const META = NeomerxDocumentInterface::KEYWORD_META;
     const INCLUDED = NeomerxDocumentInterface::KEYWORD_INCLUDED;
@@ -68,5 +67,4 @@ interface DocumentInterface extends StandardObjectInterface, MetaMemberInterface
      *      the errors or null if the error member is not present.
      */
     public function getErrors();
-
 }

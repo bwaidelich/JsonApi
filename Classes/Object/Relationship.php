@@ -13,7 +13,6 @@ use Flowpack\JsonApi\Object\RelationshipObjectCollection;
  */
 class Relationship extends StandardObject implements RelationshipInterface
 {
-
     use MetaMemberTrait;
 
     /**

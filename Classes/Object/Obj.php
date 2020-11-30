@@ -124,7 +124,6 @@ class Obj
         $copy = \is_object($data) ? clone $data : $data;
 
         foreach ($copy as $key => $value) {
-
             $transformed = \call_user_func($transform, $key);
             $value = (\is_object($value) || \is_array($value)) ? self::transformKeys($value, $transform) : $value;
 

@@ -9,7 +9,8 @@ use Neomerx\JsonApi\Exceptions\InvalidArgumentException;
  * Class SchemaContainer
  * @package Flowpack\JsonApi\Schema
  */
-class SchemaContainer extends \Neomerx\JsonApi\Schema\SchemaContainer {
+class SchemaContainer extends \Neomerx\JsonApi\Schema\SchemaContainer
+{
 
     /**
      * @var array

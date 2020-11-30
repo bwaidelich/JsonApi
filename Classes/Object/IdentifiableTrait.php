@@ -70,5 +70,4 @@ trait IdentifiableTrait
     {
         return $this->has(DocumentInterface::KEYWORD_ID);
     }
-
 }

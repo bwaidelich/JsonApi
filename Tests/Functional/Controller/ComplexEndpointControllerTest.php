@@ -162,7 +162,6 @@ class ComplexEndpointControllerTest extends FunctionalTestCase
         $entityIdentifier = $this->persistenceManager->getIdentifierByObject($testEntity);
         $response = $this->browser->request('http://localhost/testing/v1/entity-relations/' . $entityIdentifier . '/relationships/subentities', 'GET');
         $jsonResponse = \json_decode($response->getBody());
-
     }
 
     /**

@@ -17,5 +17,4 @@ use Flowpack\JsonApi\Exception\ConfigurationException;
  */
 class EndpointRoutePartHandler extends AbstractRoutePartHandler
 {
-
 }

@@ -4,6 +4,7 @@ namespace Flowpack\JsonApi\Domain;
 
 use Flowpack\JsonApi\Contract\Object\RelationshipInterface;
 use Flowpack\JsonApi\Contract\Parameters\EncodingParametersInterface;
+
 /**
  * @todo this does important stuff in laravel but for Doctrine this part seems not interesting so far.
  * Class HasMany
@@ -141,5 +142,4 @@ class HasMany extends AbstractManyRelation
     {
         return $record->{'get' . \ucfirst($this->key)}();
     }
-
 }

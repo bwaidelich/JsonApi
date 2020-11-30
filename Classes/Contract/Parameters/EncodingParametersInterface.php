@@ -8,6 +8,4 @@ interface EncodingParametersInterface
     public const MSG_ERR_INVALID_PARAMETER = 'Invalid Parameter.';
 
     public function getSorts(): iterable;
-
-
 }

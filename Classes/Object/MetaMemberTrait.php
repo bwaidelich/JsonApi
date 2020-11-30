@@ -38,5 +38,4 @@ trait MetaMemberTrait
     {
         return $this->has(DocumentInterface::KEYWORD_META);
     }
-
 }

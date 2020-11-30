@@ -215,5 +215,4 @@ interface MutableErrorInterface extends ErrorInterface
      * @return $this
      */
     public function exchangeArray(array $input);
-
 }
