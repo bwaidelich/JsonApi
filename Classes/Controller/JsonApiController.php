@@ -456,7 +456,7 @@ class JsonApiController extends ActionController
      * @throws \Neos\Flow\Http\Exception
      * @Flow\IgnoreValidation ("$resource")
      */
-    public function updateEventSourcingAction($resource): void
+    public function updateEventSourcingObjectAction($resource): void
     {
         self::updateAction($resource);
     }
