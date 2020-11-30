@@ -174,9 +174,12 @@ class JsonApiController extends ActionController
         } elseif ($this->validatedRequest->isIndex()) {
             $this->assertAllowedMethod('list');
             return 'listAction';
-        } elseif ($this->validatedRequest->isCreateResource() && $this->validatedRequest->getResourceType() === 'nodes') {
+        } elseif ($this->validatedRequest->isCreateResource() && in_array($this->validatedRequest->getResourceType(), [
+                'nodes',
+                'workspaces'
+            ])) {
             $this->assertAllowedMethod('create');
-            return 'createNodeAction';
+            return 'createEventSourcingObjectAction';
         } elseif ($this->validatedRequest->isCreateResource()) {
             $this->assertAllowedMethod('create');
             return 'createAction';
@@ -190,9 +193,12 @@ class JsonApiController extends ActionController
         if ($this->validatedRequest->isReadResource()) {
             $this->assertAllowedMethod('read');
             return 'readAction';
-        } elseif ($this->validatedRequest->isUpdateResource() && $this->validatedRequest->getResourceType() === 'nodes') {
+        } elseif ($this->validatedRequest->isUpdateResource() && in_Array($this->validatedRequest->getResourceType(), [
+                'nodes',
+                'workspaces'
+            ])) {
             $this->assertAllowedMethod('update');
-            return 'updateNodeAction';
+            return 'updateEventSourcingObjectAction';
         } elseif ($this->validatedRequest->isUpdateResource()) {
             $this->assertAllowedMethod('update');
             return 'updateAction';
@@ -271,7 +277,10 @@ class JsonApiController extends ActionController
             return;
         }
 
-        if (!\in_array($this->validatedRequest->getDocument()->getResource()->getType(), ['node']) && \in_array($this->request->getHttpRequest()->getMethod(), [
+        if (!\in_array($this->validatedRequest->getDocument()->getResource()->getType(), [
+                'node',
+                'workspaces'
+            ]) && \in_array($this->request->getHttpRequest()->getMethod(), [
                 'POST',
                 'PUT',
                 'PATCH'
@@ -408,7 +417,7 @@ class JsonApiController extends ActionController
      * @throws \Neos\Flow\Http\Exception
      * @Flow\IgnoreValidation ("$resource")
      */
-    public function createNodeAction($resource): void
+    public function createEventSourcingObjectAction($resource): void
     {
         self::createAction($resource);
     }
@@ -448,7 +457,7 @@ class JsonApiController extends ActionController
      * @throws \Neos\Flow\Http\Exception
      * @Flow\IgnoreValidation ("$resource")
      */
-    public function updateNodeAction($resource): void
+    public function updateEventSourcingAction($resource): void
     {
         self::updateAction($resource);
     }
