@@ -544,7 +544,8 @@ class JsonApiController extends ActionController
     {
         $this->response->setStatusCode(422);
         $this->handleTargetNotFoundError();
-        $this->response->setContent(\json_encode((object)$this->getFlattenedValidationErrorMessage()));
+        $this->response->setContent(\json_encode($this->getFlattenedValidationErrorMessage()));
+        return $this->response->getContent();
     }
 
     /**
@@ -554,21 +555,15 @@ class JsonApiController extends ActionController
      */
     protected function getFlattenedValidationErrorMessage(): array
     {
-//        $errorCollection = new ErrorCollection();
         $errorCollection = [];
         foreach ($this->arguments->getValidationResults()->getFlattenedErrors() as $propertyPath => $errors) {
             foreach ($errors as $key => $error) {
                 $properties = \explode('.', $propertyPath);
-//                $errorObject = new Error($key, null, 422, null, $error->render(), $error->render(), $properties);
-
                 $errorObject = [];
                 $errorObject['status'] = '422';
                 $errorObject['detail'] = $error->render();
                 $errorObject['source']['pointer'] = '/data/attributes/' . \array_pop($properties);
                 $errorCollection['errors'][] = $errorObject;
-
-                // Should assign to document
-//                $errorCollection->add($errorObject);
             }
         }
         return $errorCollection;
