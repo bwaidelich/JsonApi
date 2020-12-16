@@ -187,8 +187,13 @@ class JsonApiController extends ActionController
 
         if ($this->request->hasArgument('workspace') || $this->validatedRequest->getResourceType() === 'nodes') {
             $workspace = 'live';
+            // For API links
             if ($this->request->hasArgument('workspace')) {
                 $workspace = $this->request->getArgument('workspace');
+            }
+            // For node updates
+            if ($this->request->hasArgument('data') && isset($this->request->getArgument('data')['relationships']['workspace']['id'])) {
+                $workspace = $this->request->getArgument('data')['relationships']['workspace']['id'];
             }
             $this->record = $this->adapter->findNode($this->request->getArgument('identifier'), $workspace);
         } else {
