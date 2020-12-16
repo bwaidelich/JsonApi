@@ -185,7 +185,12 @@ class JsonApiController extends ActionController
             return 'createAction';
         }
 
-        $this->record = $this->adapter->find($this->request->getArgument('identifier'));
+        if ($this->request->hasArgument('workspace')) {
+            $this->record = $this->adapter->findNode($this->request->getArgument('identifier'), $this->request->getArgument('workspace'));
+        } else {
+            $this->record = $this->adapter->find($this->request->getArgument('identifier'));
+        }
+
         if (!$this->record) {
             $this->throwStatus(404);
         }
@@ -427,6 +432,7 @@ class JsonApiController extends ActionController
      */
     public function readAction($identifier): void
     {
+
         $data = $this->adapter->read($identifier, $this->encodedParameters);
 
         $this->view->setData($data);
