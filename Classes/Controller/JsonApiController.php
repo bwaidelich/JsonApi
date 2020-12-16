@@ -287,7 +287,7 @@ class JsonApiController extends ActionController
         }
 
         if (!\in_array($this->validatedRequest->getDocument()->getResource()->getType(), [
-                'node',
+                'nodes',
                 'workspaces'
             ]) && \in_array($this->request->getHttpRequest()->getMethod(), [
                 'POST',
