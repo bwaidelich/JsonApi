@@ -176,7 +176,6 @@ class JsonApiController extends ActionController
             return 'listAction';
         } elseif ($this->validatedRequest->isCreateResource() && in_array($this->validatedRequest->getResourceType(), [
                 'nodes',
-                'workspaces'
             ])) {
             $this->assertAllowedMethod('create');
             return 'createEventSourcingObjectAction';
@@ -192,8 +191,8 @@ class JsonApiController extends ActionController
                 $workspace = $this->request->getArgument('workspace');
             }
             // For node updates
-            if ($this->request->hasArgument('data') && isset($this->request->getArgument('data')['relationships']['workspace']['id'])) {
-                $workspace = $this->request->getArgument('data')['relationships']['workspace']['id'];
+            if ($this->request->hasArgument('data') && isset($this->request->getArgument('data')['relationships']['workspace']['data']['id'])) {
+                $workspace = $this->request->getArgument('data')['relationships']['workspace']['data']['id'];
             }
             $this->record = $this->adapter->findNode($this->request->getArgument('identifier'), $workspace);
         } else {
@@ -209,7 +208,6 @@ class JsonApiController extends ActionController
             return 'readAction';
         } elseif ($this->validatedRequest->isUpdateResource() && in_Array($this->validatedRequest->getResourceType(), [
                 'nodes',
-                'workspaces'
             ])) {
             $this->assertAllowedMethod('update');
             return 'updateEventSourcingObjectAction';
@@ -292,8 +290,7 @@ class JsonApiController extends ActionController
         }
 
         if (!\in_array($this->validatedRequest->getDocument()->getResource()->getType(), [
-                'nodes',
-                'workspaces'
+                'nodes'
             ]) && \in_array($this->request->getHttpRequest()->getMethod(), [
                 'POST',
                 'PUT',
