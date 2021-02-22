@@ -649,6 +649,10 @@ class JsonApiController extends ActionController
             $host .= ':' . $port . '/';
         }
 
+        if (!str_ends_with($host, '/')) {
+            $host = $host . '/';
+        }
+
         $suffix = isset($this->endpoint['baseUrl']) && isset($this->endpoint['version']) ? $this->endpoint['baseUrl'] . '/' . $this->endpoint['version'] : '/';
 
         return $host . $suffix;
