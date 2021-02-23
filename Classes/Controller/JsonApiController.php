@@ -184,47 +184,48 @@ class JsonApiController extends ActionController
             return 'createAction';
         }
 
-        if ($this->request->hasArgument('workspace') || $this->validatedRequest->getResourceType() === 'nodes') {
-            $workspace = 'live';
-            // For API links
-            if ($this->request->hasArgument('workspace')) {
-                $workspace = $this->request->getArgument('workspace');
-            }
-            // For node updates
-            if ($this->request->hasArgument('data') && isset($this->request->getArgument('data')['relationships']['workspace']['data']['id'])) {
-                $workspace = $this->request->getArgument('data')['relationships']['workspace']['data']['id'];
-            }
-            $this->record = $this->adapter->findNode($this->request->getArgument('identifier'), $workspace);
-        } else {
-            $this->record = $this->adapter->find($this->request->getArgument('identifier'));
-        }
-
-        if (!$this->record) {
-            $this->throwStatus(404);
-        }
-
         if ($this->validatedRequest->isReadResource()) {
             $this->assertAllowedMethod('read');
+            $this->getRecord();
             return 'readAction';
         } elseif ($this->validatedRequest->isUpdateResource() && in_Array($this->validatedRequest->getResourceType(), [
                 'nodes',
             ])) {
             $this->assertAllowedMethod('update');
+            $this->getRecord();
             return 'updateEventSourcingObjectAction';
         } elseif ($this->validatedRequest->isUpdateResource()) {
             $this->assertAllowedMethod('update');
+            \Neos\Flow\var_dump('Allow??');
+            $this->getRecord();
             return 'updateAction';
         } elseif ($this->validatedRequest->isDeleteResource()) {
             $this->assertAllowedMethod('delete');
+            $this->getRecord();
             return 'deleteAction';
         }
 
         /** Relationships */
         if ($this->validatedRequest->isReadRelatedResource() || $this->validatedRequest->isReadRelationship()) {
+            $this->getRecord();
             return 'relatedAction';
         } else {
+            $this->getRecord();
 //            $this->validatedRequest->modifyRelationship($record, $field, $request);
             return 'updateRelationshipAction';
+        }
+    }
+
+    /**
+     * @throws \Neos\Flow\Mvc\Exception\NoSuchArgumentException
+     * @throws \Neos\Flow\Mvc\Exception\StopActionException
+     */
+    protected function getRecord()
+    {
+        $this->record = $this->adapter->find($this->request->getArgument('identifier'));
+
+        if (!$this->record) {
+            $this->throwStatus(404);
         }
     }
 
