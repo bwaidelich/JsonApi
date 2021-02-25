@@ -2,6 +2,7 @@
 
 namespace Flowpack\JsonApi\Controller;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Flowpack\JsonApi\Adapter\DefaultAdapter;
 use Flowpack\JsonApi\Contract\Object\ResourceObjectInterface;
 use Flowpack\JsonApi\Exception;
@@ -103,6 +104,16 @@ class JsonApiController extends ActionController
      * @var EncodingParametersParser
      */
     protected $encodedParameters;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $errors;
+
+    public function __construct()
+    {
+        $this->errors = new ArrayCollection();
+    }
 
     /**
      * Initialize Action
@@ -318,8 +329,7 @@ class JsonApiController extends ActionController
                     try {
                         $argument->setValue($arguments);
                     } catch (\Exception $e) {
-//                     todo: handle validation error
-                        throw $e;
+                        $this->errors->add($e);
                     }
                 } elseif ($argument->isRequired()) {
                     throw new \Neos\Flow\Mvc\Exception\RequiredArgumentMissingException('Required argument "' . $argumentName . '" is not set.', 1298012500);
@@ -410,13 +420,13 @@ class JsonApiController extends ActionController
      * @throws RuntimeException
      * @throws \Neos\Flow\Http\Exception
      */
-    public function createAction($resource): void
+    public function createAction($resource)
     {
         try {
             $data = $this->adapter->create($resource, $this->validatedRequest->getDocument()->getResource(), $this->encodedParameters);
         } catch (Exception\InvalidJsonException $e) {
-            $this->response->setStatusCode(406);
-            return;
+            $this->errors->add($e);
+            return $this->errorAction();
         }
         $this->response->setStatusCode(201);
         $this->view->setData($data);
@@ -439,7 +449,6 @@ class JsonApiController extends ActionController
      */
     public function readAction($identifier): void
     {
-
         $data = $this->adapter->read($identifier, $this->encodedParameters);
 
         $this->view->setData($data);
@@ -551,24 +560,25 @@ class JsonApiController extends ActionController
      * @return string
      * @throws \Neos\Flow\Mvc\Exception\ForwardException
      * @throws \Neos\Flow\Property\Exception\TargetNotFoundException
-     * @todo resolve errors with Document error
      */
     public function errorAction()
     {
         $this->response->setStatusCode(422);
+        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', '*');
         $this->handleTargetNotFoundError();
-        $this->response->setContent(\json_encode($this->getFlattenedValidationErrorMessage()));
+        $this->response->setContent(\json_encode(array_merge($this->getFlattenedValidationErrorMessage(), $this->handleExceptions())));
         return $this->response->getContent();
     }
 
     /**
-     * Returns a json object containing all validation errors.
+     * Returns an array containing all validation errors.
      *
      * @return array
      */
     protected function getFlattenedValidationErrorMessage(): array
     {
         $errorCollection = [];
+        // Validation Errors
         foreach ($this->arguments->getValidationResults()->getFlattenedErrors() as $propertyPath => $errors) {
             foreach ($errors as $key => $error) {
                 $properties = \explode('.', $propertyPath);
@@ -579,6 +589,40 @@ class JsonApiController extends ActionController
                 $errorCollection['errors'][] = $errorObject;
             }
         }
+
+        return $errorCollection;
+    }
+
+    /**
+     * @return array
+     */
+    protected function handleExceptions(): array
+    {
+        $errorCollection = [];
+
+        // Document Errors
+        foreach ($this->errors as $error) {
+            $errorObject = [];
+            $errorObject['status'] = '422';
+            switch (get_class($error)) {
+                case Exception\InvalidJsonException::class:
+                    $errorObject['title'] = $error->getMessage();
+                    $errorObject['detail'] = $error->getJsonError();
+                    break;
+                case \Neos\Flow\Property\Exception::class:
+                    /** @var \Neos\Flow\Property\Exception $error */
+                    preg_match_all('/"(.*?)"/', $error->getMessage(), $matches);
+                    $object = explode('\\', $matches[1][0])[array_key_last(explode('\\', $matches[1][0]))];
+                    $errorObject['title'] = sprintf('Malformed object `%s`', $object);
+                    $errorObject['detail'] = sprintf('Property `%s` is not a valid attribute.', $matches[1][1]);
+                    break;
+                default:
+                    $errorObject['title'] = sprintf('Unhandled exception of `%s`.', get_class($error));
+                    break;
+            }
+            $errorCollection['errors'][] = $errorObject;
+        }
+
         return $errorCollection;
     }
 
@@ -597,7 +641,7 @@ class JsonApiController extends ActionController
                 return;
             }
 
-            throw new RuntimeException(\sprintf('Adapter %s is not registered', $adapterClass));
+            throw new RuntimeException(\sprintf('Adapter `%s` is not registered.', $adapterClass));
         }
 
         $this->adapter = new DefaultAdapter($configuration, $resource, $this->encodedParameters);
