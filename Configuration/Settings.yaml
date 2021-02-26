@@ -11,8 +11,12 @@ Flowpack:
         baseUrl: 'api'
         version: 'v1'
         resources: []
+
 Neos:
   Flow:
     mvc:
       routes:
         'Flowpack.JsonApi': true
+    error:
+      exceptionHandler:
+        className: '\Flowpack\JsonApi\Error\JsonApiExceptionHandler'

@@ -2,7 +2,6 @@
 
 namespace Flowpack\JsonApi\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Flowpack\JsonApi\Adapter\DefaultAdapter;
 use Flowpack\JsonApi\Contract\Object\ResourceObjectInterface;
 use Flowpack\JsonApi\Exception;
@@ -104,16 +103,6 @@ class JsonApiController extends ActionController
      * @var EncodingParametersParser
      */
     protected $encodedParameters;
-
-    /**
-     * @var ArrayCollection
-     */
-    protected $errors;
-
-    public function __construct()
-    {
-        $this->errors = new ArrayCollection();
-    }
 
     /**
      * Initialize Action
@@ -301,39 +290,27 @@ class JsonApiController extends ActionController
             return;
         }
 
-        if (!\in_array($this->validatedRequest->getDocument()->getResource()->getType(), [
-                'nodes'
-            ]) && \in_array($this->request->getHttpRequest()->getMethod(), [
-                'POST',
-                'PUT',
-                'PATCH'
-            ])) {
-            /** @var ResourceObjectInterface $resource */
-            $resource = $this->validatedRequest->getDocument()->getResource();
-            /** @var \Neos\Flow\Mvc\Controller\MvcPropertyMappingConfiguration $propertyMappingConfiguration */
-            $propertyMappingConfiguration = $this->arguments['resource']->getPropertyMappingConfiguration();
-            $this->adapter->setPropertyMappingConfiguration($propertyMappingConfiguration, $resource);
+        /** @var ResourceObjectInterface $resource */
+        $resource = $this->validatedRequest->getDocument()->getResource();
+        /** @var \Neos\Flow\Mvc\Controller\MvcPropertyMappingConfiguration $propertyMappingConfiguration */
+        $propertyMappingConfiguration = $this->arguments['resource']->getPropertyMappingConfiguration();
+        $this->adapter->setPropertyMappingConfiguration($propertyMappingConfiguration, $resource);
 
-            /** @var Argument $argument */
-            foreach ($this->arguments as $argument) {
-                $argumentName = $argument->getName();
-                if ($this->request->hasArgument($argumentName)) {
-                    if ($resource->hasId()) {
-                        $arguments = $this->adapter->hydrateAttributes($resource, $resource->getAttributes(), $resource->getId());
-                    } else {
-                        $arguments = $this->adapter->hydrateAttributes($resource, $resource->getAttributes());
-                    }
-                    $relationshipArguments = $this->adapter->hydrateRelations($resource, $resource->getRelationships());
-                    $arguments = \array_merge($arguments, $relationshipArguments);
-
-                    try {
-                        $argument->setValue($arguments);
-                    } catch (\Exception $e) {
-                        $this->errors->add($e);
-                    }
-                } elseif ($argument->isRequired()) {
-                    throw new \Neos\Flow\Mvc\Exception\RequiredArgumentMissingException('Required argument "' . $argumentName . '" is not set.', 1298012500);
+        /** @var Argument $argument */
+        foreach ($this->arguments as $argument) {
+            $argumentName = $argument->getName();
+            if ($this->request->hasArgument($argumentName)) {
+                if ($resource->hasId()) {
+                    $arguments = $this->adapter->hydrateAttributes($resource, $resource->getAttributes(), $resource->getId());
+                } else {
+                    $arguments = $this->adapter->hydrateAttributes($resource, $resource->getAttributes());
                 }
+                $relationshipArguments = $this->adapter->hydrateRelations($resource, $resource->getRelationships());
+                $arguments = \array_merge($arguments, $relationshipArguments);
+
+                $argument->setValue($arguments);
+            } elseif ($argument->isRequired()) {
+                throw new \Neos\Flow\Mvc\Exception\RequiredArgumentMissingException('Required argument "' . $argumentName . '" is not set.', 1298012500);
             }
         }
     }
@@ -422,25 +399,9 @@ class JsonApiController extends ActionController
      */
     public function createAction($resource)
     {
-        try {
-            $data = $this->adapter->create($resource, $this->validatedRequest->getDocument()->getResource(), $this->encodedParameters);
-        } catch (Exception\InvalidJsonException $e) {
-            $this->errors->add($e);
-            return $this->errorAction();
-        }
+        $data = $this->adapter->create($resource, $this->validatedRequest->getDocument()->getResource(), $this->encodedParameters);
         $this->response->setStatusCode(201);
         $this->view->setData($data);
-    }
-
-    /**
-     * @param $resource
-     * @throws RuntimeException
-     * @throws \Neos\Flow\Http\Exception
-     * @Flow\IgnoreValidation ("$resource")
-     */
-    public function createEventSourcingObjectAction($resource): void
-    {
-        self::createAction($resource);
     }
 
     /**
@@ -461,26 +422,10 @@ class JsonApiController extends ActionController
      */
     public function updateAction($resource): void
     {
-        try {
-            $data = $this->adapter->update($resource, $this->validatedRequest->getDocument()->getResource(), $this->encodedParameters);
-        } catch (Exception\InvalidJsonException $e) {
-            $this->response->setStatusCode(406);
-            return;
-        }
+        $data = $this->adapter->update($resource, $this->validatedRequest->getDocument()->getResource(), $this->encodedParameters);
         $this->persistenceManager->persistAll();
         $this->response->setStatusCode(200);
         $this->view->setData($data);
-    }
-
-    /**
-     * @param $resource
-     * @throws RuntimeException
-     * @throws \Neos\Flow\Http\Exception
-     * @Flow\IgnoreValidation ("$resource")
-     */
-    public function updateEventSourcingObjectAction($resource): void
-    {
-        self::updateAction($resource);
     }
 
     /**
@@ -566,7 +511,7 @@ class JsonApiController extends ActionController
         $this->response->setStatusCode(422);
         $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', '*');
         $this->handleTargetNotFoundError();
-        $this->response->setContent(\json_encode(array_merge($this->getFlattenedValidationErrorMessage(), $this->handleExceptions())));
+        $this->response->setContent(\json_encode($this->getFlattenedValidationErrorMessage()));
         return $this->response->getContent();
     }
 
