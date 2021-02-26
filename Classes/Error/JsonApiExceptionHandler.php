@@ -29,7 +29,7 @@ class JsonApiExceptionHandler extends ProductionExceptionHandler
         $baseUrl = $configuration->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Flowpack.JsonApi.endpoints.api.baseUrl');
         $version = $configuration->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Flowpack.JsonApi.endpoints.api.version');
 
-        if (substr($_SERVER['REQUEST_URI'], 0, 7) === sprintf('/%s/%s', $baseUrl, $version)) {
+        if (substr($_SERVER['REQUEST_URI'], 0, strlen(sprintf('/%s/%s', $baseUrl, $version))) === sprintf('/%s/%s', $baseUrl, $version)) {
             $this->handleJsonApiException($exception);
             return;
         }

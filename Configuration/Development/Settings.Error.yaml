@@ -2,4 +2,4 @@ Neos:
   Flow:
     error:
       exceptionHandler:
-        className: '\Flowpack\JsonApi\Error\JsonApiExceptionHandler'
+        className: '\Flowpack\JsonApi\Error\JsonApiDebugExceptionHandler'
