@@ -5,6 +5,7 @@ Flowpack:
       maximumPageSize: 100
     response:
       headers:
+        'Content-Type': 'application/vnd.api+json'
         'Access-Control-Allow-Origin': '*'
     endpoints:
       'api':

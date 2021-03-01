@@ -72,9 +72,14 @@ class JsonApiExceptionHandler extends ProductionExceptionHandler
 
         if (!headers_sent()) {
             header(sprintf('HTTP/1.1 %s %s', $statusCode, $statusMessage));
-            // @Todo get from configuration
-            header('Content-Type: application/vnd.api+json');
-            header('Access-Control-Allow-Origin: *');
+
+            $objectManager = Bootstrap::$staticObjectManager;
+            $configuration = $objectManager->get(ConfigurationManager::class);
+            $headers = $configuration->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Flowpack.JsonApi.response.header');
+
+            foreach ($headers as $header => $value) {
+                header(sprintf('%s: %s', $header, $value));
+            }
         }
 
         echo json_encode(['errors' => [$errorObject]]);
