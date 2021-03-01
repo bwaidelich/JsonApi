@@ -75,7 +75,7 @@ class JsonApiExceptionHandler extends ProductionExceptionHandler
 
             $objectManager = Bootstrap::$staticObjectManager;
             $configuration = $objectManager->get(ConfigurationManager::class);
-            $headers = $configuration->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Flowpack.JsonApi.response.header');
+            $headers = $configuration->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Flowpack.JsonApi.response.headers');
 
             foreach ($headers as $header => $value) {
                 header(sprintf('%s: %s', $header, $value));
