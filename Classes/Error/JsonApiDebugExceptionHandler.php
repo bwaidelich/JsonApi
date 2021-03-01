@@ -7,7 +7,7 @@ use Flowpack\JsonApi\Exception\InvalidJsonException;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Bootstrap;
-use Neos\Flow\Error\ProductionExceptionHandler;
+use Neos\Flow\Error\DebugExceptionHandler;
 use Neos\Flow\Error\WithHttpStatusInterface;
 use Neos\Flow\Http\Helper\ResponseInformationHelper;
 
@@ -16,7 +16,7 @@ use Neos\Flow\Http\Helper\ResponseInformationHelper;
  * @package Flowpack\JsonApi\Error
  * @Flow\Scope("singleton")
  */
-class JsonApiExceptionHandler extends ProductionExceptionHandler
+class JsonApiDebugExceptionHandler extends DebugExceptionHandler
 {
 
     /**
@@ -72,7 +72,6 @@ class JsonApiExceptionHandler extends ProductionExceptionHandler
 
         if (!headers_sent()) {
             header(sprintf('HTTP/1.1 %s %s', $statusCode, $statusMessage));
-            // @Todo get from configuration
             header('Content-Type: application/vnd.api+json');
             header('Access-Control-Allow-Origin: *');
         }

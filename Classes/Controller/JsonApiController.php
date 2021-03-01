@@ -502,20 +502,6 @@ class JsonApiController extends ActionController
     }
 
     /**
-     * @return string
-     * @throws \Neos\Flow\Mvc\Exception\ForwardException
-     * @throws \Neos\Flow\Property\Exception\TargetNotFoundException
-     */
-    public function errorAction()
-    {
-        $this->response->setStatusCode(422);
-        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', '*');
-        $this->handleTargetNotFoundError();
-        $this->response->setContent(\json_encode($this->getFlattenedValidationErrorMessage()));
-        return $this->response->getContent();
-    }
-
-    /**
      * Returns an array containing all validation errors.
      *
      * @return array
@@ -533,39 +519,6 @@ class JsonApiController extends ActionController
                 $errorObject['source']['pointer'] = '/data/attributes/' . \array_pop($properties);
                 $errorCollection['errors'][] = $errorObject;
             }
-        }
-
-        return $errorCollection;
-    }
-
-    /**
-     * @return array
-     */
-    protected function handleExceptions(): array
-    {
-        $errorCollection = [];
-
-        // Document Errors
-        foreach ($this->errors as $error) {
-            $errorObject = [];
-            $errorObject['status'] = '422';
-            switch (get_class($error)) {
-                case Exception\InvalidJsonException::class:
-                    $errorObject['title'] = $error->getMessage();
-                    $errorObject['detail'] = $error->getJsonError();
-                    break;
-                case \Neos\Flow\Property\Exception::class:
-                    /** @var \Neos\Flow\Property\Exception $error */
-                    preg_match_all('/"(.*?)"/', $error->getMessage(), $matches);
-                    $object = explode('\\', $matches[1][0])[array_key_last(explode('\\', $matches[1][0]))];
-                    $errorObject['title'] = sprintf('Malformed object `%s`', $object);
-                    $errorObject['detail'] = sprintf('Property `%s` is not a valid attribute.', $matches[1][1]);
-                    break;
-                default:
-                    $errorObject['title'] = sprintf('Unhandled exception of `%s`.', get_class($error));
-                    break;
-            }
-            $errorCollection['errors'][] = $errorObject;
         }
 
         return $errorCollection;
