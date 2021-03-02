@@ -15,7 +15,6 @@ use Neos\Flow\Error\DebugExceptionHandler;
  */
 class JsonApiDebugExceptionHandler extends DebugExceptionHandler
 {
-
     use ExceptionHandlerTrait;
 
     /**
@@ -35,5 +34,4 @@ class JsonApiDebugExceptionHandler extends DebugExceptionHandler
 
         parent::echoExceptionWeb($exception);
     }
-
 }

@@ -15,7 +15,6 @@ use Neos\Flow\Error\ProductionExceptionHandler;
  */
 class JsonApiExceptionHandler extends ProductionExceptionHandler
 {
-
     use ExceptionHandlerTrait;
 
     /**
@@ -35,5 +34,4 @@ class JsonApiExceptionHandler extends ProductionExceptionHandler
 
         parent::echoExceptionWeb($exception);
     }
-
 }
