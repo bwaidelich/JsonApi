@@ -4,7 +4,7 @@ namespace Flowpack\JsonApi\Object;
 
 use Flowpack\JsonApi\Contract\Object\ResourceObjectInterface;
 use Flowpack\JsonApi\Contract\Object\StandardObjectInterface;
-use Flowpack\JsonApi\Exception\RuntimeException;
+use Flowpack\JsonApi\Exception\UnprocessableEntityException;
 
 /**
  * Class Resource
@@ -30,7 +30,7 @@ class ResourceObject extends StandardObject implements ResourceObjectInterface
         $attributes = $this->hasAttributes() ? $this->get(self::ATTRIBUTES) : new StandardObject();
 
         if (!$attributes instanceof StandardObjectInterface) {
-            throw new RuntimeException('Attributes member is not an object.');
+            throw new UnprocessableEntityException('Attributes member is not an object. Perhaps you are passing an empty attribute?');
         }
 
         return $attributes;
@@ -52,7 +52,7 @@ class ResourceObject extends StandardObject implements ResourceObjectInterface
         $relationships = $this->hasRelationships() ? $this->{self::RELATIONSHIPS} : null;
 
         if (!is_null($relationships) && !is_object($relationships)) {
-            throw new RuntimeException('Relationships member is not an object.');
+            throw new UnprocessableEntityException('Relationships member is not an object. Perhaps you are passing empty relations?');
         }
 
         return new Relationships($relationships);
