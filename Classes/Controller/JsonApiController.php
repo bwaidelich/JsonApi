@@ -453,7 +453,15 @@ class JsonApiController extends ActionController
         if (!isset($relationships[$relationship])) {
             $this->throwStatus(404, \sprintf('Relationship "%s" not found', $relationship));
         }
-        $this->view->setData($relationships[$relationship][BaseSchema::RELATIONSHIP_DATA]);
+
+        if (isset($relationships[$relationship][BaseSchema::RELATIONSHIP_DATA])) {
+            $this->view->setData($relationships[$relationship][BaseSchema::RELATIONSHIP_DATA]);
+        } else {
+            $function = 'get' . ucfirst($relationship);
+            if (method_exists($this->record, $function)) {
+                $this->view->setData($this->record->$function());
+            }
+        }
     }
 
     /**
