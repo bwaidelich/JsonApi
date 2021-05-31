@@ -83,6 +83,16 @@ abstract class AbstractRoutePartHandler extends AbstractRoutePart implements Dyn
     }
 
     /**
+     * @param array $routeValues
+     * @param RouteParameters $parameters
+     * @return bool|ResolveResult
+     */
+    public function resolveWithParameters(array &$routeValues, RouteParameters $parameters)
+    {
+        return $this->resolve($routeValues);
+    }
+
+    /**
      * Removes matching part from $routePath.
      * This method can be overridden by custom RoutePartHandlers to implement custom matching mechanisms.
      *
